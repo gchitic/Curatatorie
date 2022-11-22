@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "GestionareAlegere.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TFGestionareAlegere *FGestionareAlegere;
+//---------------------------------------------------------------------------
+__fastcall TFGestionareAlegere::TFGestionareAlegere(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------

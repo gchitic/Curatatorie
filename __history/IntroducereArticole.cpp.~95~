@@ -1,0 +1,279 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "IntroducereArticole.h"
+#include "DataModule1.h"
+#include "NewComand.h"
+#include "EditComand.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TFIntroducereArticole *FIntroducereArticole;
+float pret_precedent,pret_precedent2,pret_precedent3,pret_precedent4,pret_precedent5;
+//---------------------------------------------------------------------------
+__fastcall TFIntroducereArticole::TFIntroducereArticole(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereArticole::RB1Click(TObject *Sender)
+{
+	Edit1->Clear();
+	Edit1->TextHint = "Cod articol";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereArticole::RB2Click(TObject *Sender)
+{
+	Edit1->Clear();
+	Edit1->TextHint = "Denumire";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereArticole::RB3Click(TObject *Sender)
+{
+	Edit1->Clear();
+	dm->QCautare->Close();
+	dm->QCautare->SQL->Clear();
+	dm->QCautare->SQL->Add("SELECT * FROM ARTICOL");
+    dm->QCautare->Open();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereArticole::SpeedButton2Click(TObject *Sender)
+{
+    FIntroducereArticole->Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereArticole::Image1Click(TObject *Sender)
+{
+	if(Edit1->Text!="")
+	{
+		if(RB1->Checked)
+		{
+            dm->QCautare->Close();
+			dm->QCautare->SQL->Clear();
+			dm->QCautare->SQL->Add("SELECT * FROM ARTICOL WHERE ARTICOL_ID=:ARTICOL_ID");
+            dm->QCautare->ParamByName("ARTICOL_ID")->AsInteger = Edit1->Text.ToInt();
+			dm->QCautare->Open();
+		}
+		else if(RB2->Checked)
+		{
+            dm->QCautare->Close();
+			dm->QCautare->SQL->Clear();
+			dm->QCautare->SQL->Add("SELECT * FROM ARTICOL WHERE DENUMIRE=:DENUMIRE");
+            dm->QCautare->ParamByName("Denumire")->AsString = Edit1->Text;
+			dm->QCautare->Open();
+		}
+        else if(RB4->Checked)
+		{
+			dm->QCautare->Close();
+			dm->QCautare->SQL->Clear();
+			dm->QCautare->SQL->Add("SELECT * FROM ARTICOL WHERE PRET=:PRET");
+			dm->QCautare->ParamByName("PRET")->AsString = Edit1->Text;
+			dm->QCautare->Open();
+        }
+	}
+    else ShowMessage("Nu a fost introdusa informatia in caseta!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFIntroducereArticole::SpeedButton1Click(TObject *Sender)
+{
+
+    //completam editurile cu denumirea articolului
+    //NewComand
+	Label1->Caption = dm->QCautare->FieldByName("PRET")->AsFloat;
+
+	if(FComand->Label34->Caption == "1")
+	{
+		FComand->Edit9->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+
+        //Transmitem pretul
+		//verificam daca caseta e goala
+		float suma_total;
+		if(FComand->Edit9->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit20->Text.ToDouble();
+			suma_total+=Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit20->Text.ToDouble() - pret_precedent;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit20->Text = String(suma_total);
+		pret_precedent = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "2")
+	{
+		FComand->Edit10->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+
+		//Transmitem pretul
+		//verificam daca caseta e goala
+		float suma_total;
+		if(FComand->Edit10->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit21->Text.ToDouble();
+			suma_total+=Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit21->Text.ToDouble() - pret_precedent2;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit21->Text = String(suma_total);
+		pret_precedent2 = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "3")
+	{
+		FComand->Edit11->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+
+        //Transmitem pretul
+		//verificam daca caseta e goala
+		float suma_total;
+		if(FComand->Edit11->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit22->Text.ToDouble();
+			suma_total+=Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit22->Text.ToDouble() - pret_precedent3;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit22->Text = String(suma_total);
+		pret_precedent3 = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "4")
+	{
+		FComand->Edit12->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	}
+	else if(FComand->Label34->Caption == "5")
+	{
+		FComand->Edit13->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+    }
+	//EditComand
+	if(FEditComand->Label34->Caption == "1")
+		FEditComand->Edit9->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "2")
+		FEditComand->Edit10->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "3")
+		FEditComand->Edit11->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "4")
+		FEditComand->Edit12->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "5")
+		FEditComand->Edit13->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+
+
+	//extragem id-ul serviciului si il inscriem in label
+	//NewComand
+	if(FComand->Label34->Caption == "1")
+		FComand->Label44->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label34->Caption == "2")
+		FComand->Label45->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label34->Caption == "3")
+		FComand->Label46->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label34->Caption == "4")
+		FComand->Label47->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label34->Caption == "5")
+		FComand->Label48->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	//EditComand
+	if(FEditComand->Label34->Caption == "1")
+		FEditComand->Label44->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "2")
+		FEditComand->Label45->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "3")
+		FEditComand->Label46->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "4")
+		FEditComand->Label47->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "5")
+		FEditComand->Label48->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+
+
+	//afisam pretul in caseta
+//	if(FComand->Edit20->Text != "")
+//	{
+//		float suma = Label1->Caption.ToDouble() + FComand->Edit20->Text.ToDouble();
+//		FComand->Edit20->Text = String(suma);
+//	}
+//	else
+//	{
+//		FComand->Edit20->Text = Label1->Caption;
+//	}
+
+
+/*
+	//completam editurile cu denumirea articolului
+    //NewComand
+    Label1->Caption = dm->QCautare->FieldByName("PRET")->AsFloat;
+	if(FComand->Label20->Caption == "1")
+		FComand->Edit9->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "2")
+		FComand->Edit10->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "3")
+		FComand->Edit11->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "4")
+		FComand->Edit12->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "5")
+		FComand->Edit13->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	//EditComand
+	if(FEditComand->Label20->Caption == "1")
+		FEditComand->Edit9->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "2")
+		FEditComand->Edit10->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "3")
+		FEditComand->Edit11->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "4")
+		FEditComand->Edit12->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "5")
+		FEditComand->Edit13->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+
+
+	//extragem id-ul serviciului si il inscriem in label
+	//NewComand
+	if(FComand->Label20->Caption == "1")
+		FComand->Label44->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label20->Caption == "2")
+		FComand->Label45->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label20->Caption == "3")
+		FComand->Label46->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label20->Caption == "4")
+		FComand->Label47->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FComand->Label20->Caption == "5")
+		FComand->Label48->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	//EditComand
+	if(FEditComand->Label20->Caption == "1")
+		FEditComand->Label44->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "2")
+		FEditComand->Label45->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "3")
+		FEditComand->Label46->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "4")
+		FEditComand->Label47->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "5")
+		FEditComand->Label48->Caption = dm->QCautare->FieldByName("ARTICOL_ID")->AsString;
+*/
+	FIntroducereArticole->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFIntroducereArticole::FormClose(TObject *Sender, TCloseAction &Action)
+{
+	Edit1->Clear();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TFIntroducereArticole::RB4Click(TObject *Sender)
+{
+	Edit1->Clear();
+    Edit1->TextHint = "Pret";
+}
+//---------------------------------------------------------------------------
+

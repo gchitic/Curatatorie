@@ -1,0 +1,292 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "GestionareMaterial.h"
+#include "DataModule1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TFGestionareMaterial *FGestionareMaterial;
+//---------------------------------------------------------------------------
+__fastcall TFGestionareMaterial::TFGestionareMaterial(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TFGestionareMaterial::FormShow(TObject *Sender)
+{
+	TabSheet2->TabVisible = false;
+	TabSheet3->TabVisible = false;
+	TabSheet4->TabVisible = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Image2Click(TObject *Sender)
+{
+	TabSheet2->TabVisible = true;
+	TabSheet2->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Image1Click(TObject *Sender)
+{
+	TabSheet3->TabVisible = true;
+	TabSheet3->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Image3Click(TObject *Sender)
+{
+	TabSheet4->TabVisible = true;
+    TabSheet4->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::SpeedButton2Click(TObject *Sender)
+{
+	Edit1->Clear();
+    Edit2->Clear();
+	TabSheet2->TabVisible = false;  //inregistrare
+	TabSheet1->Show();  //main
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::SpeedButton5Click(TObject *Sender)
+{
+	Edit7->Clear();
+	Edit3->Clear();
+	Edit4->Clear();
+
+	Panel2->Enabled = true;
+    Panel5->Enabled = false;
+
+	TabSheet3->TabVisible = false;
+    TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::SpeedButton8Click(TObject *Sender)
+{
+    Edit8->Clear();
+	TabSheet4->TabVisible = false;
+    TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::SpeedButton1Click(TObject *Sender)
+{
+	if((Edit1->Text!="") && (Edit2->Text!=""))
+	{
+		AnsiString s;
+		s = "INSERT INTO MATERIAL(DENUMIRE,PRET) ";
+		s+= "VALUES(:DENUMIRE,:PRET)";
+
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add(s);
+		dm->QLiber->ParamByName("DENUMIRE")->AsString = Edit1->Text;
+		dm->QLiber->ParamByName("PRET")->AsFloat = Edit2->Text.ToDouble();
+		dm->QLiber->ExecSQL();
+
+		Edit1->Clear();
+		Edit2->Clear();
+		//panelul cu intrebarea
+		Panel4->Visible = true;
+		Panel4->Enabled = true;
+	}
+    else ShowMessage("Completati toate campurile!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Button2Click(TObject *Sender)
+{
+	//panelul cu intrebarea
+	Panel4->Visible = false;
+	Panel4->Enabled = false;
+
+	TabSheet2->TabVisible = false;
+    TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Button1Click(TObject *Sender)
+{
+    //panelul cu intrebarea
+	Panel4->Visible = false;
+	Panel4->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Image5Click(TObject *Sender)
+{
+	if(Edit7->Text!="")
+	{
+        Panel2->Enabled = false;
+		Panel5->Enabled = true;
+
+		dm->QCautare->Close();
+		dm->QCautare->SQL->Clear();
+		dm->QCautare->SQL->Add("SELECT * FROM MATERIAL WHERE MATERIAL_ID=:MATERIAL_ID");
+		dm->QCautare->ParamByName("MATERIAL_ID")->AsInteger = Edit7->Text.ToInt();
+		dm->QCautare->Open();
+
+		Edit4->Text = dm->QCautare->FieldByName("DENUMIRE")->AsString;
+        Edit3->Text = dm->QCautare->FieldByName("PRET")->AsFloat;
+	}
+	else ShowMessage("Introduceti codul materialului");
+
+    Panel2->Enabled = false;
+	Panel5->Enabled = true;
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::SpeedButton4Click(TObject *Sender)
+{
+	if((Edit4->Text!="") && (Edit3->Text!=""))
+	{
+		AnsiString s;
+		s = "UPDATE MATERIAL SET DENUMIRE=:DENUMIRE,PRET=:PRET ";
+		s+= "WHERE MATERIAL_ID=:MATERIAL_ID";
+
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add(s);
+		dm->QLiber->ParamByName("MATERIAL_ID")->AsInteger = Edit7->Text.ToInt();
+		dm->QLiber->ParamByName("DENUMIRE")->AsString = Edit4->Text;
+		dm->QLiber->ParamByName("PRET")->AsFloat = Edit3->Text.ToDouble();
+		dm->QLiber->ExecSQL();
+
+		Edit4->Clear();
+		Edit3->Clear();
+
+		//panelul cu intrebarea
+		Panel6->Visible = true;
+		Panel6->Enabled = true;
+	}
+    else ShowMessage("Completati toate campurile!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Button4Click(TObject *Sender)
+{
+	//panelul cu intrebarea
+	Panel6->Visible = false;
+	Panel6->Enabled = false;
+
+	Edit7->Clear();
+	Panel2->Enabled = true;
+	Panel5->Enabled = false;
+
+	TabSheet2->TabVisible = false;
+    TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Button3Click(TObject *Sender)
+{
+    //panelul cu intrebarea
+	Panel6->Visible = false;
+	Panel6->Enabled = false;
+
+	Edit7->Clear();
+	Panel2->Enabled = true;
+    Panel5->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Image4Click(TObject *Sender)
+{
+	if(Edit8->Text!="")
+	{
+		if(RB1->Checked)
+		{
+			dm->QCautareMaterial->Close();
+			dm->QCautareMaterial->SQL->Clear();
+			dm->QCautareMaterial->SQL->Add("SELECT * FROM MATERIAL WHERE MATERIAL_ID=:MATERIAL_ID");
+			dm->QCautareMaterial->ParamByName("MATERIAL_ID")->AsInteger = Edit8->Text.ToInt();
+			dm->QCautareMaterial->Open();
+		}
+		else
+		{
+			dm->QCautareMaterial->Close();
+			dm->QCautareMaterial->SQL->Clear();
+			dm->QCautareMaterial->SQL->Add("SELECT * FROM MATERIAL WHERE DENUMIRE=:DENUMIRE");
+			dm->QCautareMaterial->ParamByName("DENUMIRE")->AsString = Edit8->Text;
+			dm->QCautareMaterial->Open();
+        }
+	}
+    else ShowMessage("Completati campul!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::SpeedButton7Click(TObject *Sender)
+{
+    if(RB1->Checked)
+	{
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add("DELETE FROM MATERIAL WHERE MATERIAL_ID=:MATERIAL_ID");
+		dm->QLiber->ParamByName("MATERIAL_ID")->AsInteger = Edit8->Text.ToInt();
+		dm->QLiber->ExecSQL();
+	}
+	else
+	{
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add("DELETE FROM MATERIAL WHERE DENUMIRE=:DENUMIRE");
+		dm->QLiber->ParamByName("DENUMIRE")->AsString = Edit8->Text;
+		dm->QLiber->ExecSQL();
+	}
+
+	Edit8->Clear();
+
+	//panelul cu intrebarea
+	Panel8->Visible = true;
+	Panel8->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::RB1Click(TObject *Sender)
+{
+    Edit8->Clear();
+    Edit8->TextHint = "Cod material";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::RB2Click(TObject *Sender)
+{
+	Edit8->Clear();
+    Edit8->TextHint = "Denumire";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Button6Click(TObject *Sender)
+{
+	Edit8->Clear();
+	//panelul cu intrebarea
+	Panel8->Visible = false;
+	Panel8->Enabled = false;
+
+	TabSheet4->TabVisible = false;
+    TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::Button5Click(TObject *Sender)
+{
+    //panelul cu intrebarea
+	Panel8->Visible = false;
+	Panel8->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareMaterial::RB3Click(TObject *Sender)
+{
+	Edit8->Clear();
+    Edit8->TextHint = "Pret";
+}
+//---------------------------------------------------------------------------
+

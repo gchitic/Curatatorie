@@ -1,0 +1,44 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+#include <tchar.h>
+//---------------------------------------------------------------------------
+#include <Vcl.Styles.hpp>
+#include <Vcl.Themes.hpp>
+USEFORM("Main.cpp", FMain);
+USEFORM("Gestionare.cpp", FGestionare);
+USEFORM("GestionareAlegere.cpp", FGestionareAlegere);
+USEFORM("DataModule1.cpp", dm); /* TDataModule: File Type */
+//---------------------------------------------------------------------------
+int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
+{
+	try
+	{
+		Application->Initialize();
+		Application->MainFormOnTaskBar = true;
+		TStyleManager::TrySetStyle("Charcoal Dark Slate");
+		Application->CreateForm(__classid(TFMain), &FMain);
+		Application->CreateForm(__classid(TFGestionareAlegere), &FGestionareAlegere);
+		Application->CreateForm(__classid(TFGestionare), &FGestionare);
+		Application->CreateForm(__classid(Tdm), &dm);
+		Application->Run();
+	}
+	catch (Exception &exception)
+	{
+		Application->ShowException(&exception);
+	}
+	catch (...)
+	{
+		try
+		{
+			throw Exception("");
+		}
+		catch (Exception &exception)
+		{
+			Application->ShowException(&exception);
+		}
+	}
+	return 0;
+}
+//---------------------------------------------------------------------------

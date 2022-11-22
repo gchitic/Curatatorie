@@ -1,0 +1,65 @@
+object dm: Tdm
+  OldCreateOrder = False
+  Height = 346
+  Width = 670
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=Curatat'
+      'Server=DESKTOP-NOPFO5O'
+      'OSAuthent=Yes'
+      'DriverID=MSSQL')
+    Connected = True
+    Left = 40
+    Top = 32
+  end
+  object QLiber: TFDQuery
+    Connection = FDConnection1
+    Left = 88
+    Top = 272
+  end
+  object QCautare: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'SELECT * FROM ARTICOL')
+    Left = 96
+    Top = 88
+  end
+  object DSQCautare: TDataSource
+    DataSet = QCautare
+    Left = 160
+    Top = 88
+  end
+  object QCautareMaterial: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'SELECT * FROM MATERIAL')
+    Left = 88
+    Top = 152
+  end
+  object DSQCautareMaterial: TDataSource
+    DataSet = QCautareMaterial
+    Left = 168
+    Top = 152
+  end
+  object QCautareServicii: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'SELECT * FROM SERVICII')
+    Left = 88
+    Top = 208
+  end
+  object DSQCautareServicii: TDataSource
+    DataSet = QCautareServicii
+    Left = 160
+    Top = 208
+  end
+  object QComand: TFDQuery
+    Connection = FDConnection1
+    Left = 296
+    Top = 88
+  end
+  object DSQComand: TDataSource
+    Left = 352
+    Top = 88
+  end
+end

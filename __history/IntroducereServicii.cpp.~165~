@@ -1,0 +1,298 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "IntroducereServicii.h"
+#include "DataModule1.h"
+#include "NewComand.h"
+#include "EditComand.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TFIntroducereServicii *FIntroducereServicii;
+float pret_precedent,pret_precedent2,pret_precedent3,pret_precedent4,pret_precedent5;
+//---------------------------------------------------------------------------
+__fastcall TFIntroducereServicii::TFIntroducereServicii(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereServicii::Image5Click(TObject *Sender)
+{
+    if(Edit8->Text!="")
+	{
+		if(RB1->Checked)
+		{
+			dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE SERVICIU_ID=:SERVICIU_ID");
+			dm->QCautareServicii->ParamByName("SERVICIU_ID")->AsInteger = Edit8->Text.ToInt();
+			dm->QCautareServicii->Open();
+		}
+		else if(RB2->Checked)
+		{
+			dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE DENUMIRE=:DENUMIRE");
+			dm->QCautareServicii->ParamByName("DENUMIRE")->AsString = Edit8->Text;
+			dm->QCautareServicii->Open();
+		}
+		else if(RB4->Checked)
+		{
+            dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE PRET=:PRET");
+			dm->QCautareServicii->ParamByName("PRET")->AsString = Edit8->Text;
+			dm->QCautareServicii->Open();
+        }
+	}
+	else ShowMessage("Nu a fost introdusa informatia in caseta!");
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereServicii::RB3Click(TObject *Sender)
+{
+	Edit8->Clear();
+	dm->QCautareServicii->Close();
+	dm->QCautareServicii->SQL->Clear();
+	dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII");
+	dm->QCautareServicii->Open();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereServicii::RB1Click(TObject *Sender)
+{
+    Edit8->Clear();
+	Edit8->TextHint = "Cod serviciu";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereServicii::RB2Click(TObject *Sender)
+{
+	Edit8->Clear();
+	Edit8->TextHint = "Denumire";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereServicii::SpeedButton8Click(TObject *Sender)
+{
+	FIntroducereServicii->Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducereServicii::SpeedButton7Click(TObject *Sender)
+{
+	//completam editurile din NewComand cu denumirea serviciului
+	//NewComand
+	Label1->Caption = dm->QCautareServicii->FieldByName("PRET")->AsFloat;
+
+	float suma_total;
+	if(FComand->Label34->Caption == "1")
+	{
+		FComand->Edit4->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+		//Transmitem pretul
+		//verificam daca caseta e goala
+		suma_total=0;
+		if(FComand->Edit4->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit20->Text.ToDouble() + Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit20->Text.ToDouble() - pret_precedent;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit20->Text = String(suma_total);
+		pret_precedent = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "2")
+	{
+		FComand->Edit5->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+        //Transmitem pretul
+		//verificam daca caseta e goala
+		suma_total=0;
+		if(FComand->Edit5->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit21->Text.ToDouble() + Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit21->Text.ToDouble() - pret_precedent2;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit21->Text = String(suma_total);
+		pret_precedent2 = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "3")
+	{
+		FComand->Edit6->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+        //Transmitem pretul
+		//verificam daca caseta e goala
+		suma_total=0;
+		if(FComand->Edit5->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit22->Text.ToDouble() + Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit22->Text.ToDouble() - pret_precedent2;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit22->Text = String(suma_total);
+		pret_precedent2 = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "4")
+	{
+		FComand->Edit7->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+        //Transmitem pretul
+		//verificam daca caseta e goala
+		suma_total=0;
+		if(FComand->Edit6->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit23->Text.ToDouble() + Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit23->Text.ToDouble() - pret_precedent3;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit23->Text = String(suma_total);
+		pret_precedent3 = Label1->Caption.ToDouble();
+	}
+	else if(FComand->Label34->Caption == "5")
+	{
+		FComand->Edit8->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+        //Transmitem pretul
+		//verificam daca caseta e goala
+		suma_total=0;
+		if(FComand->Edit5->Text=="")
+		{
+			//adunam pretul
+			suma_total = FComand->Edit21->Text.ToDouble() + Label1->Caption.ToDouble();
+		}
+		else
+		{
+			//scadem pretul precedent si adunam pretul curent
+			suma_total = FComand->Edit21->Text.ToDouble() - pret_precedent2;
+			suma_total = suma_total + Label1->Caption.ToDouble();
+		}
+		FComand->Edit21->Text = String(suma_total);
+		pret_precedent2 = Label1->Caption.ToDouble();
+    }
+    //EditComand
+	if(FEditComand->Label34->Caption == "1")
+		FEditComand->Edit4->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "2")
+		FEditComand->Edit5->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "3")
+		FEditComand->Edit6->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "4")
+		FEditComand->Edit7->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label34->Caption == "5")
+		FEditComand->Edit8->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+
+	//extragem id-ul serviciului si il inscriem in label
+    //NewComand
+	if(FComand->Label34->Caption == "1")
+		FComand->Label27->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label34->Caption == "2")
+		FComand->Label29->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label34->Caption == "3")
+		FComand->Label30->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label34->Caption == "4")
+		FComand->Label31->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label34->Caption == "5")
+		FComand->Label32->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	//EDitComand
+	if(FEditComand->Label34->Caption == "1")
+		FEditComand->Label27->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "2")
+		FEditComand->Label29->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "3")
+		FEditComand->Label30->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "4")
+		FEditComand->Label31->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label34->Caption == "5")
+		FEditComand->Label32->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+
+
+/*
+	//completam editurile din NewComand cu denumirea serviciului
+	//NewComand
+    Label1->Caption = dm->QCautareServicii->FieldByName("PRET")->AsFloat;
+	if(FComand->Label20->Caption == "1")
+		FComand->Edit4->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "2")
+		FComand->Edit5->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "3")
+		FComand->Edit6->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "4")
+		FComand->Edit7->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FComand->Label20->Caption == "5")
+		FComand->Edit8->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+    //EditComand
+	if(FEditComand->Label20->Caption == "1")
+		FEditComand->Edit4->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "2")
+		FEditComand->Edit5->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "3")
+		FEditComand->Edit6->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "4")
+		FEditComand->Edit7->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+	else if(FEditComand->Label20->Caption == "5")
+		FEditComand->Edit8->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+
+
+	//extragem id-ul serviciului si il inscriem in label
+    //NewComand
+	if(FComand->Label20->Caption == "1")
+		FComand->Label27->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label20->Caption == "2")
+		FComand->Label29->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label20->Caption == "3")
+		FComand->Label30->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label20->Caption == "4")
+		FComand->Label31->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FComand->Label20->Caption == "5")
+		FComand->Label32->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	//EDitComand
+	if(FEditComand->Label20->Caption == "1")
+		FEditComand->Label27->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "2")
+		FEditComand->Label29->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "3")
+		FEditComand->Label30->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "4")
+		FEditComand->Label31->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+	else if(FEditComand->Label20->Caption == "5")
+		FEditComand->Label32->Caption = dm->QCautareServicii->FieldByName("SERVICIU_ID")->AsString;
+*/
+	FIntroducereServicii->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFIntroducereServicii::FormClose(TObject *Sender, TCloseAction &Action)
+{
+	Edit8->Clear();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TFIntroducereServicii::RB4Click(TObject *Sender)
+{
+	Edit8->Clear();
+    Edit8->TextHint = "Pret";
+}
+//---------------------------------------------------------------------------
+
+

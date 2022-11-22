@@ -1,0 +1,91 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Introducerea.h"
+#include "DataModule1.h"
+#include "NewComand.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TFIntroducere *FIntroducere;
+//---------------------------------------------------------------------------
+__fastcall TFIntroducere::TFIntroducere(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducere::RB1Click(TObject *Sender)
+{
+	Edit8->Clear();
+	Edit8->TextHint = "Cod serviciu";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducere::RB2Click(TObject *Sender)
+{
+	Edit8->Clear();
+	Edit8->TextHint = "Denumire";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducere::RB3Click(TObject *Sender)
+{
+	Edit8->Clear();
+    dm->QCautareServicii->Close();
+	dm->QCautareServicii->SQL->Clear();
+	dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII");
+	dm->QCautareServicii->Open();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducere::RadioButton3Click(TObject *Sender)
+{
+	Edit8->Clear();
+	Edit8->TextHint = "Cod articol";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducere::RadioButton6Click(TObject *Sender)
+{
+    Edit8->Clear();
+	Edit8->TextHint = "Cod material";
+}
+//---------------------------------------------------------------------------
+void __fastcall TFIntroducere::Image5Click(TObject *Sender)
+{
+	if(Edit8->Text!="")
+	{
+		if(RB1->Checked)
+		{
+			dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE SERVICIU_ID=:SERVICIU_ID");
+			dm->QCautareServicii->ParamByName("SERVICIU_ID")->AsInteger = Edit8->Text.ToInt();
+			dm->QCautareServicii->Open();
+		}
+		else if(RB2->Checked)
+		{
+			dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE DENUMIRE=:DENUMIRE");
+			dm->QCautareServicii->ParamByName("DENUMIRE")->AsString = Edit8->Text;
+			dm->QCautareServicii->Open();
+		}
+	}
+	else ShowMessage("Nu a fost introdusa informatia in caseta!");
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFIntroducere::SpeedButton8Click(TObject *Sender)
+{
+    Edit8->Clear();
+	FIntroducere->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFIntroducere::FormShow(TObject *Sender)
+{
+	//if(tabVisible==1) ShowMessage("1");
+    TabSheet2->TabVisible = false;
+}
+//---------------------------------------------------------------------------
+

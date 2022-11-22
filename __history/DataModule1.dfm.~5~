@@ -1,0 +1,32 @@
+object dm: Tdm
+  OldCreateOrder = False
+  Height = 346
+  Width = 670
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=Curatat'
+      'Server=DESKTOP-NOPFO5O'
+      'OSAuthent=Yes'
+      'DriverID=MSSQL')
+    Connected = True
+    Left = 40
+    Top = 32
+  end
+  object QLiber: TFDQuery
+    Connection = FDConnection1
+    Left = 96
+    Top = 144
+  end
+  object QCautare: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'SELECT * FROM ARTICOL')
+    Left = 96
+    Top = 88
+  end
+  object DSQCautare: TDataSource
+    DataSet = QCautare
+    Left = 160
+    Top = 88
+  end
+end

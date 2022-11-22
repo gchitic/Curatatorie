@@ -1,0 +1,323 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "GestionareServicii.h"
+#include "DataModule1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TFGestionareServicii *FGestionareServicii;
+//---------------------------------------------------------------------------
+__fastcall TFGestionareServicii::TFGestionareServicii(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TFGestionareServicii::Image2Click(TObject *Sender)
+{
+	TabSheet2->TabVisible = true;
+    TabSheet2->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Image1Click(TObject *Sender)
+{
+	TabSheet3->TabVisible = true;
+	TabSheet3->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Image3Click(TObject *Sender)
+{
+	TabSheet4->TabVisible = true;
+	TabSheet4->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::FormShow(TObject *Sender)
+{
+	TabSheet2->TabVisible = false;
+	TabSheet3->TabVisible = false;
+	TabSheet4->TabVisible = false;
+
+	//panelul cu intrebarea
+	Panel8->Visible = false;
+	Panel8->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::SpeedButton1Click(TObject *Sender)
+{
+	if((Edit1->Text!="") && (Edit2->Text!=""))
+	{
+		AnsiString s;
+		s = "INSERT INTO SERVICII(DENUMIRE,PRET)";
+		s+= "VALUES(:DENUMIRE,:PRET)";
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add(s);
+		dm->QLiber->ParamByName("DENUMIRE")->AsString = Edit1->Text;
+		dm->QLiber->ParamByName("PRET")->AsFloat = Edit2->Text.ToDouble();
+		dm->QLiber->ExecSQL();
+
+		Edit1->Clear();
+        Edit2->Clear();
+		//PANELUL CU INTREBAREA
+		Panel4->Visible = true;
+		Panel4->Enabled = true;
+	}
+    else ShowMessage("Completati campurile!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::SpeedButton2Click(TObject *Sender)
+{
+	Edit1->Clear();
+	Edit2->Clear();
+
+	Panel4->Visible = false;
+	Panel4->Enabled = false;
+
+	TabSheet2->TabVisible = false;
+	TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button1Click(TObject *Sender)
+{
+    Edit1->Clear();
+	Edit2->Clear();
+
+	Panel4->Visible = false;
+	Panel4->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button2Click(TObject *Sender)
+{
+    Panel4->Visible = false;
+	Panel4->Enabled = false;
+
+	TabSheet2->TabVisible = false;
+    TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::RB1Click(TObject *Sender)
+{
+	Edit8->Clear();
+	Edit8->TextHint = "Cod serviciu";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::RB2Click(TObject *Sender)
+{
+    Edit8->Clear();
+	Edit8->TextHint = "Denumire";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Image4Click(TObject *Sender)
+{
+	if(Edit8->Text!="")
+	{
+		if(RB1->Checked)
+		{
+            dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE SERVICIU_ID=:SERVICIU_ID");
+			dm->QCautareServicii->ParamByName("SERVICIU_ID")->AsInteger = Edit8->Text.ToInt();
+			dm->QCautareServicii->Open();
+		}
+		else if(RB2->Checked)
+		{
+			dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE DENUMIRE=:DENUMIRE");
+			dm->QCautareServicii->ParamByName("DENUMIRE")->AsString = Edit8->Text;
+			dm->QCautareServicii->Open();
+		}
+		else
+		{
+            dm->QCautareServicii->Close();
+			dm->QCautareServicii->SQL->Clear();
+			dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE PRET=:PRET");
+			dm->QCautareServicii->ParamByName("PRET")->AsString = Edit8->Text;
+			dm->QCautareServicii->Open();
+        }
+	}
+	else ShowMessage("Completati campurile!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::SpeedButton7Click(TObject *Sender)
+{
+	if(RB1->Checked)
+	{
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add("DELETE FROM SERVICII WHERE SERVICIU_ID=:SERVICIU_ID");
+        dm->QLiber->ParamByName("SERVICIU_ID")->AsInteger = Edit8->Text.ToInt();
+        dm->QLiber->ExecSQL();
+	}
+	else if(RB2->Checked)
+	{
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add("DELETE FROM SERVICII WHERE DENUMIRE=:DENUMIRE");
+        dm->QLiber->ParamByName("DENUMIRE")->AsString = Edit8->Text;
+		dm->QLiber->ExecSQL();
+	}
+    else
+	{
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add("DELETE FROM SERVICII WHERE PRET=:PRET");
+        dm->QLiber->ParamByName("PRET")->AsString = Edit8->Text;
+		dm->QLiber->ExecSQL();
+	}
+	Edit8->Clear();
+	//panelul cu intrebarea
+	Panel8->Visible = true;
+	Panel8->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button5Click(TObject *Sender)
+{
+	//panelul cu intrebarea
+	Panel8->Visible = false;
+	Panel8->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button6Click(TObject *Sender)
+{
+    Panel8->Visible = false;
+	Panel8->Enabled = false;
+
+	TabSheet4->TabVisible = false;
+	TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::SpeedButton8Click(TObject *Sender)
+{
+    Edit8->Clear();
+    //panelul cu intrebarea
+	Panel8->Visible = false;
+	Panel8->Enabled = false;
+
+	TabSheet4->TabVisible = false;
+	TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Image5Click(TObject *Sender)
+{
+	if(Edit7->Text!="")
+	{
+		dm->QCautareServicii->Close();
+		dm->QCautareServicii->SQL->Clear();
+		dm->QCautareServicii->SQL->Add("SELECT * FROM SERVICII WHERE SERVICIU_ID=:SERVICIU_ID");
+        dm->QCautareServicii->ParamByName("SERVICIU_ID")->AsInteger = Edit7->Text.ToInt();
+		dm->QCautareServicii->Open();
+		Edit4->Text = dm->QCautareServicii->FieldByName("DENUMIRE")->AsString;
+        Edit3->Text = dm->QCautareServicii->FieldByName("PRET")->AsFloat;
+
+		Panel5->Enabled = true;
+		Panel2->Enabled = false;
+	}
+	else ShowMessage("Completati campurile!");
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::SpeedButton4Click(TObject *Sender)
+{
+	if(Edit4->Text!="" && Edit3->Text!="")
+	{
+		AnsiString s;
+		s = "UPDATE SERVICII SET DENUMIRE=:DENUMIRE,PRET=:PRET WHERE SERVICIU_ID=:SERVICIU_ID" ;
+
+		dm->QLiber->Close();
+		dm->QLiber->SQL->Clear();
+		dm->QLiber->SQL->Add(s);
+		dm->QLiber->ParamByName("SERVICIU_ID")->AsInteger = Edit7->Text.ToInt();
+		dm->QLiber->ParamByName("DENUMIRE")->AsString = Edit4->Text;
+        dm->QLiber->ParamByName("PRET")->AsFloat = Edit3->Text.ToDouble();
+		dm->QLiber->ExecSQL();
+
+		Edit7->Clear();
+		Edit4->Clear();
+		Edit3->Clear();
+
+		//panelul cu intrebarea
+		Panel6->Visible = true;
+        Panel6->Enabled = true;
+	}
+	else ShowMessage("Completati campurile!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button3Click(TObject *Sender)
+{
+	Panel5->Enabled = false;    //indormatia
+	Panel2->Enabled = true;	//id
+
+	//panelul cu intrebarea
+	Panel6->Visible = false;
+	Panel6->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button4Click(TObject *Sender)
+{
+    //panelul cu intrebarea
+	Panel6->Visible = false;
+	Panel6->Enabled = false;
+
+	TabSheet3->TabVisible = false;
+	TabSheet1->Show();
+
+	Panel5->Enabled = false;    //indormatia
+	Panel2->Enabled = true;	//id
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::SpeedButton5Click(TObject *Sender)
+{
+    Edit7->Clear();
+	Edit4->Clear();
+	Edit3->Clear();
+
+    Panel5->Enabled = false;    //indormatia
+	Panel2->Enabled = true;	//id
+
+    TabSheet3->TabVisible = false;
+	TabSheet1->Show();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::RB3Click(TObject *Sender)
+{
+	Edit8->Clear();
+    Edit8->TextHint = "Pret";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFGestionareServicii::Button7Click(TObject *Sender)
+{
+	Edit3->Clear();
+	Edit4->Clear();
+
+	Panel2->Enabled = true;
+	Panel5->Enabled = false;
+
+	Panel6->Visible = false;
+	Panel6->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
